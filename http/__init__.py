@@ -1,8 +1,9 @@
 import socket, threading as thread, signal, sys
 
 def init(port=3000):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     addr = ("127.0.0.1", port)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind(addr)
     sock.listen(1)
     return {"socket": sock, "addr": addr}
