@@ -27,7 +27,6 @@ def serve(http, callback=lambda addr: None):
 
 def close(http):
     if not http["socket"]:
-        return True
+        return
 
     http["socket"].close()
-    return True
