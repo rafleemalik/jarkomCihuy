@@ -4,7 +4,6 @@ def init(port=3000):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     addr = ("127.0.0.1", port)
     sock.bind(addr)
-    sock.settimeout(1)
     sock.listen(1)
     return {"socket": sock, "addr": addr}
 
@@ -17,13 +16,10 @@ def serve(http, callback=lambda addr: None):
     callback(http["addr"])
 
     while True:
-        try:
-            (csock, addr) = http["socket"].accept()
-            msg = csock.recv(4096).decode()
-            csock.send(msg.upper().encode())
-            csock.close()
-        except TimeoutError:
-            pass
+        (csock, addr) = http["socket"].accept()
+        msg = csock.recv(4096).decode()
+        csock.send(msg.upper().encode())
+        csock.close()
 
 def close(http):
     if not http["socket"]:
