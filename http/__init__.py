@@ -23,7 +23,4 @@ def serve(http, callback=lambda addr: None):
         csock.close()
 
 def close(http):
-    if not http["socket"]:
-        return
-
     http["socket"].close()
