@@ -1,4 +1,4 @@
-import socket, signal, sys
+import socket, signal, sys, os, pathlib
 
 def init(port=3000):
     addr = ("127.0.0.1", port)
@@ -19,7 +19,27 @@ def serve(http, callback=lambda host, port: None):
     while True:
         (csock, addr) = http["socket"].accept()
         msg = csock.recv(4096).decode()
-        csock.send(msg.upper().encode())
+
+        head = msg.rstrip().split("\n")[0].split()
+        path = head[1]
+
+        path = f".{path}"
+        if path.endswith("/"):
+            path = path[:-1]
+
+        if os.path.isdir(path):
+            path += "/index.html"
+
+        if not os.path.exists(path):
+            csock.send(f"HTTP/1.1 404 Not Found\r\n".encode())
+            csock.close()
+            continue
+
+        content = ""
+        with open(path, "r") as f:
+            content = f.read()
+
+        csock.send(f"HTTP/1.1 200 OK\n\n{content}\r\n".encode())
         csock.close()
 
 def close(http):
