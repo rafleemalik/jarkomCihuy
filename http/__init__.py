@@ -8,6 +8,24 @@ def init(port=3000):
     sock.listen(1)
     return {"socket": sock, "addr": addr}
 
+def read_file(path):
+    content = ""
+    with open(path, "r") as f:
+        content = f.read()
+
+    return content
+
+def normalize_path(path):
+    path = f".{path}"
+
+    if path.endswith("/"):
+        path = path[:-1]
+
+    if os.path.isdir(path):
+        path += "/index.html"
+    
+    return path
+
 def serve(http, callback=lambda host, port: None):
     def __sigint_handler(sig, frame):
         close(http)
@@ -21,24 +39,14 @@ def serve(http, callback=lambda host, port: None):
         msg = csock.recv(4096).decode()
 
         head = msg.rstrip().split("\n")[0].split()
-        path = head[1]
-
-        path = f".{path}"
-        if path.endswith("/"):
-            path = path[:-1]
-
-        if os.path.isdir(path):
-            path += "/index.html"
+        path = normalize_path(head[1])
 
         if not os.path.exists(path):
             csock.send(f"HTTP/1.1 404 Not Found\r\n".encode())
             csock.close()
             continue
 
-        content = ""
-        with open(path, "r") as f:
-            content = f.read()
-
+        content = read_file(path)
         csock.send(f"HTTP/1.1 200 OK\n\n{content}\r\n".encode())
         csock.close()
 
