@@ -38,6 +38,9 @@ def serve(http, root, callback=lambda host, port: None):
         head = msg.rstrip().split("\n")[0].split()
         path = normalize_path(head[1], root)
 
+        assert head[0] == "GET"
+        assert head[2] == "HTTP/1.1"
+
         if not os.path.exists(path):
             csock.send(f"HTTP/1.1 404 Not Found\r\n".encode())
             csock.close()
