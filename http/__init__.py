@@ -10,6 +10,7 @@ def init(port=3000):
 
 def read_file(path):
     content = ""
+
     with open(path, "r") as f:
         content = f.read()
 
