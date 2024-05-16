@@ -1,4 +1,4 @@
-import socket, signal, sys, os, pathlib
+import socket, signal, sys, os
 
 def init(port=3000):
     addr = ("127.0.0.1", port)
@@ -12,8 +12,8 @@ def read_file(path):
     with open(path, "r") as f:
         return f.read()
 
-def normalize_path(path):
-    path = f".{path}"
+def normalize_path(path, root):
+    path = f"./{root}/{path}"
 
     if path.endswith("/"):
         path = path[:-1]
@@ -23,7 +23,7 @@ def normalize_path(path):
     
     return path
 
-def serve(http, callback=lambda host, port: None):
+def serve(http, root, callback=lambda host, port: None):
     def __sigint_handler(sig, frame):
         close(http)
         sys.exit(0)
@@ -36,7 +36,7 @@ def serve(http, callback=lambda host, port: None):
         msg = csock.recv(4096).decode()
 
         head = msg.rstrip().split("\n")[0].split()
-        path = normalize_path(head[1])
+        path = normalize_path(head[1], root)
 
         if not os.path.exists(path):
             csock.send(f"HTTP/1.1 404 Not Found\r\n".encode())

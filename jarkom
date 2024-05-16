@@ -1,10 +1,12 @@
 #!/usr/bin/python
 
-import http
+import http, sys
 
 def main():
+    root = sys.argv[1] if len(sys.argv) >= 2 else "./"
+
     server = http.init()
-    http.serve(server, lambda host, port: print(f"Listening on http://{host}:{port}"))
+    http.serve(server, root, lambda host, port: print(f"Listening on http://{host}:{port}"))
 
 if __name__ == "__main__":
     main()
