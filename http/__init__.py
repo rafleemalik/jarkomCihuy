@@ -9,12 +9,8 @@ def init(port=3000):
     return {"socket": sock, "addr": addr}
 
 def read_file(path):
-    content = ""
-
     with open(path, "r") as f:
-        content = f.read()
-
-    return content
+        return f.read()
 
 def normalize_path(path):
     path = f".{path}"
