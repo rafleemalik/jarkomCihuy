@@ -10,7 +10,9 @@ def init(port=3000):
 
 def read_file(path):
     with open(path, "r") as f:
-        return f.read()
+        content = f.read()
+        f.close()
+        return content
 
 def normalize_path(path, root):
     path = f"./{root}/{path}"
