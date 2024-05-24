@@ -1,4 +1,4 @@
-import socket, signal, sys, os
+import socket, os
 
 def init(port=3000):
     addr = ("127.0.0.1", port)
@@ -25,12 +25,7 @@ def normalize_path(path, root):
     
     return path
 
-def serve(http, root, callback=lambda host, port: None):
-    def __sigint_handler(sig, frame):
-        close(http)
-        sys.exit(0)
-
-    signal.signal(signal.SIGINT, __sigint_handler)
+def serve(http, callback=lambda host, port: None):
     callback(http["addr"][0], http["addr"][1])
 
     while True:
