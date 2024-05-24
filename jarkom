@@ -16,7 +16,7 @@ def main():
     signal.signal(signal.SIGINT, __sigint_handler)
 
     for _ in range(THREAD_MAX):
-        thread = threading.Thread(target=http.serve, args=[server, lambda host, port: print(f"[INFO ::] Listening..")])
+        thread = threading.Thread(target=http.serve, args=[server, root, lambda host, port: print(f"[INFO ::] Listening..")])
         thread.start()
 
 if __name__ == "__main__":

@@ -25,7 +25,7 @@ def normalize_path(path, root):
     
     return path
 
-def serve(http, callback=lambda host, port: None):
+def serve(http, root, callback=lambda host, port: None):
     callback(http["addr"][0], http["addr"][1])
 
     while True:
