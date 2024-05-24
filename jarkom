@@ -6,7 +6,6 @@ THREAD_MAX = 4
 
 def main():
     root = sys.argv[1] if len(sys.argv) >= 2 else "./"
-
     server = http.init()
 
     def __sigint_handler(sig, frame):
