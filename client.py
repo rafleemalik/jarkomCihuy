@@ -1,14 +1,15 @@
+#!/usr/bin/python
+
 import socket
 
-def client():
-   serverName = 'localhost'
-   serverPort = 3000
-   clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-   clientSocket.connect((serverName, serverPort))
-   masukan = input('input: ')
-   clientSocket.send(masukan.encode())
-   get = clientSocket.recv(4096)
-   print(get.decode())
-   clientSocket.close()
-   
-client()
+serverName = "localhost"
+serverPort = 3000
+
+clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+clientSocket.connect((serverName, serverPort))
+
+path = input("path: ")
+clientSocket.send(f"GET {path} HTTP/1.1".encode())
+get = clientSocket.recv(4096)
+print(get.decode())
+clientSocket.close()
