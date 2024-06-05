@@ -1,9 +1,7 @@
 #!/usr/bin/python
 
-import http, threading, sys, signal
+import http, sys, signal
 from typing import Any
-
-THREAD_MAX = 4
 
 # .index() substitusion
 def __index(lst: list, v: Any) -> int:
@@ -13,12 +11,12 @@ def __index(lst: list, v: Any) -> int:
 
     return -1
 
-
 def parse_args() -> dict[str, Any]:
     args = sys.argv[1:]
-    option = {}
 
+    option = {}
     option["thread"] = True
+
     thread_idx = __index(args, "--no-thread")
     if thread_idx != -1:
         args.pop(thread_idx)
@@ -29,20 +27,14 @@ def parse_args() -> dict[str, Any]:
 
 def main():
     args = parse_args()
-    server = http.init()
+    server = http.init(thread=args["thread"])
 
     def __sigint_handler(sig, frame):
         http.close(server)
         sys.exit(0)
 
     signal.signal(signal.SIGINT, __sigint_handler)
-
-    if args["thread"]:
-        for _ in range(THREAD_MAX):
-            thread = threading.Thread(target=http.serve, args=[server, args["root"], lambda host, port: print(f"[INFO ::] Listening..")])
-            thread.start()
-    else:
-        http.serve(server, args["root"], lambda host, port: print(f"[INFO ::] Listening (no threading).."))
+    http.serve(server, args["root"], lambda host, port: http.log(f"Server alive at http://{host}:{port}"))
 
 if __name__ == "__main__":
     main()
